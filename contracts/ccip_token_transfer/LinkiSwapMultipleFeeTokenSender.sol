@@ -236,12 +236,19 @@ contract LinkiSwapMultipleFeeTokenTransferor is OwnerIsCreator {
     /// It is automatically called when Ether is transferred to the contract without any data.
     receive() external payable {}
 
-
-
-
-
-
-
+    /**
+     * Returns the latest answer.
+     */
+    function getChainlinkDataFeedLatestAnswer() public view returns (int) {
+        (
+            /* uint80 roundID */,
+            int answer,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
+        ) = dataFeed.latestRoundData();
+        return answer;
+    }
 
     /// @notice Allows the contract owner to withdraw the entire balance of Ether from the contract.
     /// @dev This function reverts if there are no funds to withdraw or if the transfer fails.
