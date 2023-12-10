@@ -5,6 +5,7 @@ import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract LinkiSwapMultipleFeeTokenTransferor is OwnerIsCreator {
 
@@ -32,12 +33,18 @@ contract LinkiSwapMultipleFeeTokenTransferor is OwnerIsCreator {
 
     IERC20 private s_linkToken;
 
+    AggregatorV3Interface internal dataFeed;
+
     /// @notice Constructor initializes the contract with the router address.
     /// @param _router The address of the router contract.
     /// @param _link The address of the link contract.
     constructor(address _router, address _link) {
         s_router = IRouterClient(_router);
         s_linkToken = IERC20(_link);
+
+        // BTC/ETH price feed contract address
+        dataFeed = AggregatorV3Interface(0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22);
+        // Other price feed for other cryptos should be initialise here
     }
 
     /// @dev Modifier that checks if the chain with the given destinationChainSelector is allowlisted.
@@ -228,6 +235,13 @@ contract LinkiSwapMultipleFeeTokenTransferor is OwnerIsCreator {
     /// @dev This function has no function body, making it a default function for receiving Ether.
     /// It is automatically called when Ether is transferred to the contract without any data.
     receive() external payable {}
+
+
+
+
+
+
+
 
     /// @notice Allows the contract owner to withdraw the entire balance of Ether from the contract.
     /// @dev This function reverts if there are no funds to withdraw or if the transfer fails.
